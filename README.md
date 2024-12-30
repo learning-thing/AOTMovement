@@ -1,3 +1,9 @@
 # Trying to make some Attack on Titan style movement.
 
+This is my attempt at simulating
+the 3d movuevers from Attack on Titan. 
+More or less inspired by the roblox game "Attack on Titan Revolution" using raylib.
+
+
+# Thanks
 Thanks to raylib for making making games so easy!
