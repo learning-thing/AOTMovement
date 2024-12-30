@@ -14,6 +14,7 @@ class ManueverRope {
         vec3 startpos = vec3(0);
         vec3 endpos = vec3(0);
         TreeManager _Forest;
+        float PowerPercent = .1f;        
         bool grabbing = false;
         void seek(vec3 start, vec3 direction) {
             logVec3(start, "Received position: ");
@@ -32,7 +33,6 @@ class ManueverRope {
                     grabbing=true;
                     break;
                 }
-
 
                 if (s.y()<=0) {
                     std::clog << "Hit something\n";
@@ -79,7 +79,7 @@ class ManueverDevice {
             Rrope._Forest = Forest;
         }
 
-        void update(vec3 pos, vec3 lookdir) {
+        vec3 update(vec3 pos, vec3 lookdir) {
             Lrope.startpos = pos;
             Rrope.startpos = pos;
             Lrope.draw();
@@ -92,13 +92,14 @@ class ManueverDevice {
 
             if (IsKeyReleased(KEY_Q)) Lrope.reset();
             if (IsKeyReleased(KEY_E)) Rrope.reset();
-            
+
+            return Forest._fixCollision(pos);
         }
 
         vec3 GetPullVector() {
             vec3 ret = Lrope.getPullVec()*.5 + Rrope.getPullVec()*.5;
             ret.make_unit_vector();
-            return ret;
+            return ret*.8;
         }
 };
 
@@ -113,6 +114,7 @@ class AOTMovement {
         vec3 strafevec = vec3(0);
         float floorheight = 3;
         float frameTime = 0;
+
         bool debug = false;
 
         void DBGLOG(std::string msg) {
@@ -171,6 +173,7 @@ class AOTMovement {
         float accelSpeed = 27;
         float deceleration = 1;
         float height = 0;
+        float fov = 60;
         ManueverDevice Mdevice;
 
 
@@ -187,8 +190,8 @@ class AOTMovement {
                 position.e[1]=floorheight;
             }
             DBGLOG( position.y() );
-            if (IsKeyDown(KEY_SPACE))
-                if (Mdevice.Lrope.grabbing)
+            //if (IsKeyDown(KEY_SPACE))
+                if (Mdevice.Lrope.grabbing || Mdevice.Rrope.grabbing || (Mdevice.Rrope.grabbing && Mdevice.Lrope.grabbing))
                     acceleration+=Mdevice.GetPullVector()*100;
             logVec3(Mdevice.GetPullVector(), "Direction we pull to: ");
             
@@ -203,9 +206,11 @@ class AOTMovement {
             //position += speed * frametime + 0.5 * acceleration * frametime * frametime;
             speed += acceleration * frametime;
 
+            fov = 60+speed.length()*.2f;
+
             acceleration = 0;
             logVec3(position, "Actual movement position: ");
-            Mdevice.update(position, CamTargPos());
+            acceleration = (Mdevice.update(position, CamTargPos()) - position)*5;
             //std::clog << position.x() << " : " << position.z() << "\n";
             return position.toRayVec();
         }

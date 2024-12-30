@@ -20,6 +20,14 @@ void main()
     float dist = length(viewPos-vertexPosition);
     
     fragPosition = vec3(matModel * vec4(vertPos, 1.0));
+
+
+    //Wind effect
+    float posEffect = .05;
+    float speed = 5;
+    float offset = 1 + sin(  iTime*.5+fragPosition.x*posEffect+fragPosition.z*posEffect )*0.05*fragPosition.y*fragPosition.y*.015 ;
+    fragPosition += vec3(0, 0, offset);
+
     fragNormal = vertexNormal;
     fragColor = vertexColor;
     

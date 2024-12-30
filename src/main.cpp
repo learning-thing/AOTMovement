@@ -11,12 +11,12 @@ int main() {
     ToggleBorderlessWindowed();
     SetTargetFPS(100);
     DisableCursor();
-
-    
+    int mapSize = 1500;
+    int halfMapSize = mapSize/2;
     Model Tree = LoadModel("res/Tree.glb");
     Shader BasicLighting = LoadShader("res/shaders/baselight.vs", "res/shaders/baselight.fs");
     Tree.materials[0].shader = BasicLighting;
-    Vector3 LightPos = (Vector3){0, 100, 0};
+    Vector3 LightPos = (Vector3){(float)halfMapSize, 100, (float)halfMapSize};
 
     int MatModelLoc = GetShaderLocation(BasicLighting, "matModel");
     int camPosLoc = GetShaderLocation(BasicLighting, "viewPos");
@@ -41,9 +41,6 @@ int main() {
     SetShaderValue(BasicLighting, iTimeLoc, &iTime, SHADER_UNIFORM_FLOAT);
     SetShaderValue(BasicLighting, ambientLoc, &ambientColor, SHADER_UNIFORM_VEC3);
     //Generate list of trees
-    
-    int mapSize = 1500;
-    int halfMapSize = mapSize/2;
 
     int treecount = 200;
     for (int i = 0; i<treecount; i++) movement.Mdevice.Forest.add_Tree(halfMapSize);
@@ -56,19 +53,23 @@ int main() {
         movement.upAngle = (float)GetMouseY()/1000;
         LightPos = camera.position;
         SetShaderValue(BasicLighting, camPosLoc, &camera.position, SHADER_UNIFORM_VEC3);
+        SetShaderValue(BasicLighting, iTimeLoc, &iTime, SHADER_UNIFORM_FLOAT);
+
+        camera.fovy+=(movement.fov-camera.fovy)*.5;
 
         //Draw Stuff
         BeginDrawing();
         BeginMode3D(camera);
-            ClearBackground(BLACK);
+            ClearBackground((Color){10, 10, 25});
             
             logVec3(movement.getPos(), "Camera pos: ");
             logVec3(movement.Mdevice.Rrope.endpos, "endPos RRope");
             //DrawGrid(100, 3);
             BeginShaderMode(BasicLighting);
-                DrawPlane(vec3(0).toRayVec(), (Vector2){(float)mapSize, (float)mapSize}, DARKBROWN);
                 
             EndShaderMode();
+            DrawPlane(vec3(0).toRayVec(), (Vector2){(float)mapSize, (float)mapSize}, (Color){26, 13, 1, 255});
+
 
             camera.position = movement.update(GetFrameTime());
 

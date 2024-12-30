@@ -17,20 +17,25 @@ float ambientStrength = 0.09;
 void main()
 {
     vec4 col = fragColor;
-    if (fragPosition.y>50) {//Lazy ass-dumbass way to give the trees color lmao
-        col = vec4(0.051, 0.4471, 0.0, 1.0);
-    } else {
-        col = vec4(0.4471, 0.1882, 0.0157, 1.0);
-    }
+    
+    
 
     // ambient
-    vec3 ambient = ambientStrength * ambientColor;
+    //vec3 ambient = ambientStrength * ambientColor;
+    vec3 ambient = ambientStrength * vec3(0, 0, 0);
     float dist =  length(viewPos-fragPosition);
     // diffuse 
     vec3 norm = normalize(fragNormal);//Frag Normal
     vec3 lightDir = normalize(lightPosition - fragPosition);//normalised Light direction vector
     float diff = max(dot(norm, lightDir), 0.0);//Raw diffused value
     vec3 diffuse = diff * ambientColor;//Final Diffused Value
+
+    if (fragPosition.y>80) {//Lazy ass-dumbass way to give the trees color lmao
+        col = vec4(0.0353, 0.1686, 0.0157, 1.0);
+    } else {
+        col = vec4(0.1451, 0.0745, 0.0275, 1.0);
+    }
+    //col.xyz -= vec3(dist*.0002);
 
     //Shadow
     vec3 s = fragPosition;
