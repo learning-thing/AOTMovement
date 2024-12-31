@@ -3,6 +3,7 @@
 #include <raylib.h>
 #define TDEBUG true
 #include "map_gen.hpp"
+#include <sounds.hpp>
 
 void logVec3(vec3 vecToLog, std::string label) {
     if (TDEBUG)
@@ -14,6 +15,7 @@ class ManueverRope {
         vec3 startpos = vec3(0);
         vec3 endpos = vec3(0);
         TreeManager _Forest;
+        Soundman sounds;
         float PowerPercent = .1f;        
         bool grabbing = false;
         void seek(vec3 start, vec3 direction) {
@@ -31,6 +33,7 @@ class ManueverRope {
                     endpos = s;
                     logVec3(endpos, "Hit at position: ");
                     grabbing=true;
+                    sounds.playHitSound();
                     break;
                 }
 
@@ -99,7 +102,7 @@ class ManueverDevice {
         vec3 GetPullVector() {
             vec3 ret = Lrope.getPullVec()*.5 + Rrope.getPullVec()*.5;
             ret.make_unit_vector();
-            return ret*.8;
+            return ret;
         }
 };
 
@@ -110,7 +113,7 @@ class AOTMovement {
         vec3 position = vec3(0, 3, -5);
         vec3 speed = vec3(0);
         vec3 acceleration = vec3(0);
-        vec3 gravity = vec3(0, 5, 0);
+        vec3 gravity = vec3(0, 3, 0);
         vec3 strafevec = vec3(0);
         float floorheight = 3;
         float frameTime = 0;
@@ -192,7 +195,7 @@ class AOTMovement {
             DBGLOG( position.y() );
             //if (IsKeyDown(KEY_SPACE))
                 if (Mdevice.Lrope.grabbing || Mdevice.Rrope.grabbing || (Mdevice.Rrope.grabbing && Mdevice.Lrope.grabbing))
-                    acceleration+=Mdevice.GetPullVector()*100;
+                    acceleration+=Mdevice.GetPullVector()*120;
             logVec3(Mdevice.GetPullVector(), "Direction we pull to: ");
             
             speed+=acceleration*frametime;

@@ -11,7 +11,9 @@ int main() {
     ToggleBorderlessWindowed();
     SetTargetFPS(100);
     DisableCursor();
-    int mapSize = 1500;
+    InitAudioDevice();      // Initialize audio device
+
+    int mapSize = 5500;
     int halfMapSize = mapSize/2;
     Model Tree = LoadModel("res/Tree.glb");
     Shader BasicLighting = LoadShader("res/shaders/baselight.vs", "res/shaders/baselight.fs");
@@ -68,19 +70,21 @@ int main() {
             BeginShaderMode(BasicLighting);
                 
             EndShaderMode();
-            DrawPlane(vec3(0).toRayVec(), (Vector2){(float)mapSize, (float)mapSize}, (Color){26, 13, 1, 255});
+            
 
+            DrawPlane(vec3(0).toRayVec(), (Vector2){(float)mapSize, (float)mapSize}, (Color){26, 13, 1, 255});
 
             camera.position = movement.update(GetFrameTime());
 
-            for (int i = 0; i<treecount; i++) DrawModel(Tree, movement.Mdevice.Forest._trees[i].toRayVec(), 1, BROWN);
-
+            for (int i = 0; i<treecount; i++) DrawModel(Tree, movement.Mdevice.Forest._trees[i].toRayVec(), 3, BROWN);
         EndMode3D();
         //CrossHair point
         DrawCircle(GetScreenWidth()/2, GetScreenHeight()/2, 2, WHITE);
         DrawFPS(10, 10);
         EndDrawing();
     }
+    UnloadModel(Tree);
+    UnloadShader(BasicLighting);
     CloseWindow();
     return 0;
 }

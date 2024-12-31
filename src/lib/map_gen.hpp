@@ -23,7 +23,9 @@ class TreeManager {
 
         bool collides(vec3 ppos)  {
             for (int i = 0; i<treeCount; i++)
-                if ( (ppos*vec3(1, 0, 1) - _trees[i]*vec3(1, 0, 1)).length() < 6 && ppos.y()<100)
+                //if ( (ppos*vec3(1, 0, 1) - _trees[i]*vec3(1, 0, 1)).length() < 6 && ppos.y()<100)
+                if ( (ppos*vec3(1, 0, 1) - _trees[i]*vec3(1, 0, 1)).length() < 6)
+
                     return true;
             return false;
         }
