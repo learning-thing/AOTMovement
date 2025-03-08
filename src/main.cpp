@@ -18,7 +18,7 @@ int main() {
     Model Tree = LoadModel("res/Tree.glb");
     Shader BasicLighting = LoadShader("res/shaders/baselight.vs", "res/shaders/baselight.fs");
     Tree.materials[0].shader = BasicLighting;
-    Vector3 LightPos = (Vector3){(float)halfMapSize, 100, (float)halfMapSize};
+    Vector3 LightPos = (Vector3){(float)halfMapSize, 10, (float)halfMapSize};
 
     int MatModelLoc = GetShaderLocation(BasicLighting, "matModel");
     int camPosLoc = GetShaderLocation(BasicLighting, "viewPos");
